@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "GopherCAN_devboard_example.h"
+#include "DAM.h"
 
 /* USER CODE END Includes */
 
@@ -51,6 +52,8 @@ DMA_HandleTypeDef hdma_adc3;
 
 CAN_HandleTypeDef hcan1;
 
+TIM_HandleTypeDef htim10;
+
 osThreadId taskMain_LoopHandle;
 osThreadId taskGCAN_HardwaHandle;
 /* USER CODE BEGIN PV */
@@ -65,6 +68,7 @@ static void MX_ADC1_Init(void);
 static void MX_ADC2_Init(void);
 static void MX_DMA_Init(void);
 static void MX_ADC3_Init(void);
+static void MX_TIM10_Init(void);
 void task_main_loop(void const * argument);
 void task_gcan_hw(void const * argument);
 
@@ -110,9 +114,19 @@ int main(void)
   MX_ADC2_Init();
   MX_DMA_Init();
   MX_ADC3_Init();
+  MX_TIM10_Init();
   /* USER CODE BEGIN 2 */
 
   init(&hcan1);
+  DAM_init(&hcan1, NULL, &hadc1, &hadc2, &hadc3,
+		   &htim10, DAM_LED_GPIO_Port, DAM_LED_Pin);
+
+  if (lock_param_sending((CAN_INFO_STRUCT*)&u16_tester))
+  {
+	  // this parameter is not correctly in a bucket. Check the HW yaml
+  }
+
+  u16_tester.data = 0x1337;
 
   /* USER CODE END 2 */
 
@@ -422,6 +436,37 @@ static void MX_CAN1_Init(void)
 }
 
 /**
+  * @brief TIM10 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM10_Init(void)
+{
+
+  /* USER CODE BEGIN TIM10_Init 0 */
+
+  /* USER CODE END TIM10_Init 0 */
+
+  /* USER CODE BEGIN TIM10_Init 1 */
+
+  /* USER CODE END TIM10_Init 1 */
+  htim10.Instance = TIM10;
+  htim10.Init.Prescaler = 0;
+  htim10.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim10.Init.Period = 65535;
+  htim10.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim10.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim10) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM10_Init 2 */
+
+  /* USER CODE END TIM10_Init 2 */
+
+}
+
+/**
   * Enable DMA controller clock
   */
 static void MX_DMA_Init(void)
@@ -459,7 +504,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GRN_LED_GPIO_Port, GRN_LED_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, GRN_LED_Pin|DAM_LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : BUTTON_Pin */
   GPIO_InitStruct.Pin = BUTTON_Pin;
@@ -467,12 +512,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(BUTTON_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : GRN_LED_Pin */
-  GPIO_InitStruct.Pin = GRN_LED_Pin;
+  /*Configure GPIO pins : GRN_LED_Pin DAM_LED_Pin */
+  GPIO_InitStruct.Pin = GRN_LED_Pin|DAM_LED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GRN_LED_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
 
@@ -535,7 +580,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
-
+  else
+  {
+	  DAQ_TimerCallback(htim);
+  }
   /* USER CODE END Callback 1 */
 }
 

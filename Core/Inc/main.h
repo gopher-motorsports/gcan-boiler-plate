@@ -62,6 +62,8 @@ void Error_Handler(void);
 #define BUTTON_GPIO_Port GPIOC
 #define GRN_LED_Pin GPIO_PIN_0
 #define GRN_LED_GPIO_Port GPIOB
+#define DAM_LED_Pin GPIO_PIN_7
+#define DAM_LED_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

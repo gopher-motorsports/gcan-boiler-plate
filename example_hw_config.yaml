@@ -17,15 +17,8 @@ buckets:
             - dam_chan_4
             - dam_chan_5
             - dam_chan_6
+            - u16_tester
 
-    bucket_3:
-        id: 3
-        frequency_hz: 1
-        parameters:
-            - float_tester_4
-            - float_tester_5
-            - float_tester_6
-            - example_new_param
 
 parameters_produced:
 # ADC1:
@@ -73,33 +66,3 @@ parameters_produced:
             output: voltage
         num_samples_buffered: 10
         
-
-# CAN sensors:
-    float_tester_4:
-        produced_by: CAN
-        sensor:
-            name: "test_can_sensor"
-            output: d16_fixed
-        num_samples_buffered: 1
-            
-    float_tester_5:
-        produced_by: CAN
-        sensor:
-            name: "test_can_sensor"
-            output: u16_raw
-        num_samples_buffered: 1
-            
-    float_tester_6:
-        produced_by: CAN
-        sensor:
-            name: "test_can_sensor"
-            output: float_1_raw
-        num_samples_buffered: 1
-            
-    example_new_param:
-        produced_by: CAN
-        sensor:
-            name: "test_can_sensor"
-            output: float_2_scaled
-        num_samples_buffered: 1
-
