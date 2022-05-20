@@ -4,6 +4,8 @@
 
 #include "GopherCAN_devboard_example.h"
 #include "main.h"
+#include "stdbool.h"
+#include "cmsis_os.h"
 
 // the HAL_CAN struct. This example only works for a single CAN bus
 CAN_HandleTypeDef* example_hcan;
@@ -33,19 +35,16 @@ void init(CAN_HandleTypeDef* hcan_ptr)
 	if (init_can(example_hcan, THIS_MODULE_ID, BXTYPE_MASTER))
 	{
 		// an error has occurred, stay here
-		while (1);
+		while (1)
+		{
+			// failed to init CAN
+			HAL_GPIO_TogglePin(LED_2_GPIO_Port, LED_2_Pin);
+			HAL_Delay(100);
+		}
 	}
 
 	// enable all of the variables in GopherCAN for testing
 	set_all_params_state(TRUE);
-
-	// Set the function pointer of SET_LED_STATE. This means the function change_led_state()
-	// will be run whenever this can command is sent to the module
-	if (add_custom_can_func(SET_LED_STATE, &change_led_state, TRUE, NULL))
-	{
-		// an error has occurred
-		while (1);
-	}
 }
 
 
@@ -70,22 +69,77 @@ void can_buffer_handling_loop()
 //  called every 10ms
 void main_loop()
 {
-	U8 button_state;
-
-	// If the button is pressed send a can command to another to change the LED state
-	// To on or off depending on the button
-	button_state = HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin);
-
-	// Logic to only send one message per change in button state
-	if (button_state != last_button_state)
+	while(1)
 	{
-		last_button_state = button_state;
+#define MAX_OLD_DATA_TIME 200
+#define THROTTLE_DIF_THRESH_percent 10
+#define THROTTLE_DIF_TIME_ms 1000
+		// check to make sure the ETC is not stuck. ECU and BSPD handles checking TPS1 and TPS2
+		request_parameter(PRIO_HIGH, TCM_ID, THROTTLE_POS_REQUIRED_ECU_ID);
+		request_parameter(PRIO_HIGH, TCM_ID, THROTTLE_POS_1_ECU_ID);
 
-		if (send_can_command(PRIO_HIGH, ALL_MODULES_ID, SET_LED_STATE,
-				button_state, button_state, button_state, button_state))
+		uint32_t curr_tick = HAL_GetTick();
+		static uint32_t throttle_off_time = 0;
+		static bool throttle_off_active = false;
+		static bool bspd_off = false;
+		static uint32_t last_blink = 0;
+
+		// blinky
+		if (curr_tick - last_blink >= 500)
 		{
-			// error sending command
+			HAL_GPIO_TogglePin(GRN_LED_GPIO_Port, GRN_LED_Pin);
+			last_blink = curr_tick;
 		}
+
+		// make sure the data is up to date
+		if (curr_tick - throttle_pos_required_ecu.last_rx < MAX_OLD_DATA_TIME &&
+				curr_tick - throttle_pos_1_ecu.last_rx < MAX_OLD_DATA_TIME)
+		{
+			// off if we are getting data
+			HAL_GPIO_WritePin(LED_2_GPIO_Port, LED_2_Pin, RESET);
+
+			// check to make sure the expected throttle and actual throttle are not
+			// different by more than 10% for than a second
+			if (throttle_pos_1_ecu.data - throttle_pos_required_ecu.data > THROTTLE_DIF_THRESH_percent)
+			{
+				HAL_GPIO_WritePin(LED_3_GPIO_Port, LED_3_Pin, SET);
+
+				// the error case has been triggered. Start the timer
+				if (!throttle_off_active)
+				{
+					throttle_off_active = true;
+					throttle_off_time = curr_tick;
+				}
+				else
+				{
+					// see if it has been long enough since the BSPD was detected to be off
+					if (curr_tick - throttle_off_time > THROTTLE_DIF_TIME_ms)
+					{
+						HAL_GPIO_WritePin(BSPD_Pow_GPIO_Port, BSPD_Pow_Pin, RESET);
+						bspd_off = true;
+					}
+				}
+			}
+			else
+			{
+				// reset the error states
+				throttle_off_time = 0;
+				throttle_off_active = false;
+
+				if (!bspd_off) HAL_GPIO_WritePin(LED_3_GPIO_Port, LED_3_Pin, RESET);
+			}
+		}
+		else
+		{
+			// not getting data. Reset the error timers
+			throttle_off_time = 0;
+			throttle_off_active = false;
+
+			// note that we are not getting data
+			HAL_GPIO_WritePin(LED_2_GPIO_Port, LED_2_Pin, SET);
+		}
+
+		osDelay(25);
 	}
 }
 
