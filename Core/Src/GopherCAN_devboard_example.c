@@ -82,7 +82,7 @@ void main_loop()
 		last_button_state = button_state;
 
 		if (send_can_command(PRIO_HIGH, ALL_MODULES_ID, SET_LED_STATE,
-				button_state, button_state, button_state, button_state))
+				!button_state, !button_state, !button_state, !button_state))
 		{
 			// error sending command
 		}

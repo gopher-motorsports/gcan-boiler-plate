@@ -11,7 +11,8 @@
 // Begin Configuration defines. These are to be modified by the module specific developer
 
 //#define TARGET F0XX
-#define TARGET F7XX
+//#define TARGET F7XX
+#define TARGET F4XX
 
 // these are defines that only need to be changed if this module needs to interact with
 // non-GopherCAN busses
