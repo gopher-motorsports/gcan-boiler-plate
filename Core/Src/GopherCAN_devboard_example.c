@@ -1,6 +1,5 @@
 // GopherCAN_devboard_example.c
-//  TODO DOCS - when the project becomes more fleshed out add a quick comment
-//  explaining the purpose of this file
+//  This is a bare-bones module file that can be used in order to make a module main file
 
 #include "GopherCAN_devboard_example.h"
 #include "main.h"
@@ -19,7 +18,7 @@ U8 last_button_state = 0;
 
 // the CAN callback function used in this example
 static void change_led_state(U8 sender, void* UNUSED_LOCAL_PARAM, U8 remote_param, U8 UNUSED1, U8 UNUSED2, U8 UNUSED3);
-
+static void init_error(void);
 
 // init
 //  What needs to happen on startup in order to run GopherCAN
@@ -32,8 +31,7 @@ void init(CAN_HandleTypeDef* hcan_ptr)
 	// Check the STM_CAN repo for the file "F0xx CAN Config Settings.pptx" for the correct settings
 	if (init_can(example_hcan, THIS_MODULE_ID, BXTYPE_MASTER))
 	{
-		// an error has occurred, stay here
-		while (1);
+		init_error();
 	}
 
 	// enable all of the variables in GopherCAN for testing
@@ -43,8 +41,7 @@ void init(CAN_HandleTypeDef* hcan_ptr)
 	// will be run whenever this can command is sent to the module
 	if (add_custom_can_func(SET_LED_STATE, &change_led_state, TRUE, NULL))
 	{
-		// an error has occurred
-		while (1);
+		init_error();
 	}
 }
 
@@ -101,6 +98,19 @@ static void change_led_state(U8 sender, void* parameter, U8 remote_param, U8 UNU
 {
 	HAL_GPIO_WritePin(GRN_LED_GPIO_Port, GRN_LED_Pin, !!remote_param);
 	return;
+}
+
+
+// init_error
+//  This function will stay in an infinite loop, blinking the LED in a 0.5sec period. Should only
+//  be called from the init function before the RTOS starts
+void init_error(void)
+{
+	while (1)
+	{
+		HAL_GPIO_TogglePin(GRN_LED_GPIO_Port, GRN_LED_Pin);
+		HAL_Delay(250);
+	}
 }
 
 // end of GopherCAN_example.c
