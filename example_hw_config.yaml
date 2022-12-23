@@ -1,0 +1,59 @@
+
+module_name: "example_sensor_hub"
+
+buckets:
+    bucket_0:
+        # NOTE: frequency will be converted to an integer number of ms for a delay
+        frequency_hz: 250
+        parameters:
+            # these must directly be a variable defined in GopherCAN
+            dam_chan_1:
+                ADC: ADC1_IN10
+                sensor: linear_pos_sensor_50
+                samples_buffered: 1
+                
+            dam_chan_2:
+                ADC: ADC3_IN13
+                sensor: linear_pos_sensor_50
+                samples_buffered: 1
+                
+            dam_chan_3:
+                ADC: ADC2_IN3
+                sensor: linear_pos_sensor_50
+                samples_buffered: 1
+
+    bucket_1:
+        frequency_hz: 100
+        parameters:
+            dam_chan_4:
+                ADC: ADC1_IN11
+                sensor: linear_pos_sensor_50
+                samples_buffered: 1
+                
+            dam_chan_5:
+                ADC: ADC3_IN1
+                sensor: linear_pos_sensor_50
+                samples_buffered: 1
+                
+            dam_chan_6:
+                ADC: ADC2_IN4
+                sensor: linear_pos_sensor_50
+                samples_buffered: 1
+                
+    bucket_1:
+        frequency_hz: 50
+        parameters:
+            dam_chan_7:
+                ADC: ADC1_IN12
+                sensor: linear_pos_sensor_50
+                samples_buffered: 1
+                
+            dam_chan_8:
+                ADC: ADC3_IN2
+                sensor: linear_pos_sensor_50
+                samples_buffered: 1
+                
+            dam_chan_9:
+                ADC: ADC2_IN6
+                sensor: linear_pos_sensor_50
+                samples_buffered: 1
