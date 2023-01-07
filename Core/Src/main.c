@@ -132,6 +132,8 @@ int main(void)
   gsense_init(&hcan1, &hadc1, &hadc2, &hadc3, &htim10,
 		      GRN_LED_GPIO_Port, GRN_LED_Pin);
 
+  set_all_param_sending(TRUE);
+
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -457,8 +459,7 @@ static void MX_CAN1_Init(void)
   /* USER CODE END CAN1_Init 1 */
   hcan1.Instance = CAN1;
   hcan1.Init.Prescaler = 5;
-  //hcan1.Init.Mode = CAN_MODE_NORMAL;
-  hcan1.Init.Mode = CAN_MODE_LOOPBACK;
+  hcan1.Init.Mode = CAN_MODE_NORMAL;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
   hcan1.Init.TimeSeg1 = CAN_BS1_6TQ;
   hcan1.Init.TimeSeg2 = CAN_BS2_1TQ;
