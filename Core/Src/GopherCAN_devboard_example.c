@@ -3,6 +3,7 @@
 
 #include "GopherCAN_devboard_example.h"
 #include "main.h"
+#include <stdio.h>
 
 // the HAL_CAN struct. This example only works for a single CAN bus
 CAN_HandleTypeDef* example_hcan;
@@ -10,6 +11,7 @@ CAN_HandleTypeDef* example_hcan;
 
 // Use this to define what module this board will be
 #define THIS_MODULE_ID PDM_ID
+#define PRINTF_HB_MS_BETWEEN 1000
 
 
 // some global variables for examples
@@ -67,7 +69,15 @@ void can_buffer_handling_loop()
 //  called every 10ms
 void main_loop()
 {
+	static U32 last_print_hb = 0;
 	U8 button_state;
+
+	// send the current tick over UART every second
+	if (HAL_GetTick() - last_print_hb >= PRINTF_HB_MS_BETWEEN)
+	{
+		printf("Current tick: %lu\n", HAL_GetTick());
+		last_print_hb = HAL_GetTick();
+	}
 
 	// If the button is pressed send a can command to another to change the LED state
 	// To on or off depending on the button
