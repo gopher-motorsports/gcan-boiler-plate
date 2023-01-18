@@ -8,17 +8,17 @@ buckets:
         parameters:
             # these must directly be a variable defined in GopherCAN
             dam_chan_1:
-                ADC: ADC1_IN10
+                ADC: ADC1_IN15
                 sensor: linear_pos_sensor_50
                 samples_buffered: 2
                 
             dam_chan_2:
-                ADC: ADC3_IN13
+                ADC: ADC1_IN14
                 sensor: linear_pos_sensor_50
                 samples_buffered: 2
                 
             dam_chan_3:
-                ADC: ADC2_IN3
+                ADC: ADC1_IN7
                 sensor: linear_pos_sensor_50
                 samples_buffered: 2
 
@@ -26,12 +26,12 @@ buckets:
         frequency_hz: 1000
         parameters:
             dam_chan_4:
-                ADC: ADC1_IN11
+                ADC: ADC2_IN6
                 sensor: linear_pos_sensor_50
                 samples_buffered: 2
                 
             dam_chan_5:
-                ADC: ADC3_IN1
+                ADC: ADC2_IN5
                 sensor: linear_pos_sensor_50
                 samples_buffered: 2
                 
@@ -44,7 +44,7 @@ buckets:
         frequency_hz: 50
         parameters:
             dam_chan_7:
-                ADC: ADC1_IN12
+                ADC: ADC3_IN3
                 sensor: linear_pos_sensor_50
                 samples_buffered: 2
                 
@@ -54,6 +54,11 @@ buckets:
                 samples_buffered: 2
                 
             dam_chan_9:
-                ADC: ADC2_IN6
+                ADC: ADC3_IN1
+                sensor: linear_pos_sensor_50
+                samples_buffered: 2
+                
+            dam_chan_10:
+                ADC: ADC3_IN0
                 sensor: linear_pos_sensor_50
                 samples_buffered: 2

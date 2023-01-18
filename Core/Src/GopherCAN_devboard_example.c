@@ -3,6 +3,7 @@
 
 #include "GopherCAN_devboard_example.h"
 #include "main.h"
+#include <stdio.h>
 
 // the HAL_CAN struct. This example only works for a single CAN bus
 CAN_HandleTypeDef* example_hcan;
@@ -10,6 +11,7 @@ CAN_HandleTypeDef* example_hcan;
 
 // Use this to define what module this board will be
 #define THIS_MODULE_ID PDM_ID
+#define PRINTF_HB_MS_BETWEEN 1000
 
 
 // some global variables for examples
@@ -67,22 +69,13 @@ void can_buffer_handling_loop()
 //  called every 10ms
 void main_loop()
 {
-	U8 button_state;
+	static U32 last_print_hb = 0;
 
-	// If the button is pressed send a can command to another to change the LED state
-	// To on or off depending on the button
-	button_state = HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin);
-
-	// Logic to only send one message per change in button state
-	if (button_state != last_button_state)
+	// send the current tick over UART every second
+	if (HAL_GetTick() - last_print_hb >= PRINTF_HB_MS_BETWEEN)
 	{
-		last_button_state = button_state;
-
-		if (send_can_command(PRIO_HIGH, ALL_MODULES_ID, SET_LED_STATE,
-				!button_state, !button_state, !button_state, !button_state))
-		{
-			// error sending command
-		}
+		printf("Current tick: %lu\n", HAL_GetTick());
+		last_print_hb = HAL_GetTick();
 	}
 }
 
@@ -96,7 +89,7 @@ void main_loop()
 //  correctly
 static void change_led_state(U8 sender, void* parameter, U8 remote_param, U8 UNUSED1, U8 UNUSED2, U8 UNUSED3)
 {
-	HAL_GPIO_WritePin(GRN_LED_GPIO_Port, GRN_LED_Pin, !!remote_param);
+	HAL_GPIO_WritePin(HBeat_GPIO_Port, HBeat_Pin, !!remote_param);
 	return;
 }
 
@@ -108,7 +101,7 @@ void init_error(void)
 {
 	while (1)
 	{
-		HAL_GPIO_TogglePin(GRN_LED_GPIO_Port, GRN_LED_Pin);
+		HAL_GPIO_TogglePin(HBeat_GPIO_Port, HBeat_Pin);
 		HAL_Delay(250);
 	}
 }
