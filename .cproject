@@ -357,10 +357,10 @@
 	<storageModule moduleId="refreshScope"/>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.release.733063659;com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.release.733063659.;com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.1956486282;com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.864579479">
+		<scannerConfigBuildInfo instanceId="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.954027188;com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.954027188.;com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.310378719;com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.893679992">
 			<autodiscovery enabled="false" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1786371192;com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1786371192.;com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.1006219406;com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.1861145183">
+		<scannerConfigBuildInfo instanceId="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.release.245971702;com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.release.245971702.;com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.1708827395;com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.1841486780">
 			<autodiscovery enabled="false" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 	</storageModule>
