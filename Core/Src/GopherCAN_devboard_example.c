@@ -31,13 +31,10 @@ void init(CAN_HandleTypeDef* hcan_ptr)
 	// initialize CAN
 	// NOTE: CAN will also need to be added in CubeMX and code must be generated
 	// Check the STM_CAN repo for the file "F0xx CAN Config Settings.pptx" for the correct settings
-	if (init_can(example_hcan, THIS_MODULE_ID, BXTYPE_MASTER))
+	if (init_can(GCAN0, example_hcan, THIS_MODULE_ID, BXTYPE_MASTER))
 	{
 		init_error();
 	}
-
-	// enable all of the variables in GopherCAN for testing
-	set_all_params_state(TRUE);
 
 	// Set the function pointer of SET_LED_STATE. This means the function change_led_state()
 	// will be run whenever this can command is sent to the module
@@ -60,7 +57,7 @@ void can_buffer_handling_loop()
 	}
 
 	// handle the transmission hardware for each CAN bus
-	service_can_tx_hardware(example_hcan);
+	service_can_tx(example_hcan);
 }
 
 
