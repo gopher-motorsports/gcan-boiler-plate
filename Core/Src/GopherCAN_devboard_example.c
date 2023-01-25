@@ -32,7 +32,7 @@ void init(CAN_HandleTypeDef* hcan_ptr)
 	// initialize CAN
 	// NOTE: CAN will also need to be added in CubeMX and code must be generated
 	// Check the STM_CAN repo for the file "F0xx CAN Config Settings.pptx" for the correct settings
-	if (init_can(GCAN0, example_hcan, THIS_MODULE_ID, BXTYPE_MASTER))
+	if (init_can(example_hcan, THIS_MODULE_ID, BXTYPE_MASTER))
 	{
 		init_error();
 	}
@@ -58,7 +58,7 @@ void can_buffer_handling_loop()
 	}
 
 	// handle the transmission hardware for each CAN bus
-	service_can_tx(example_hcan);
+	service_can_tx_hardware(example_hcan);
 }
 
 
@@ -113,7 +113,7 @@ void main_loop()
 //  correctly
 static void change_led_state(U8 sender, void* parameter, U8 remote_param, U8 UNUSED1, U8 UNUSED2, U8 UNUSED3)
 {
-	HAL_GPIO_WritePin(GRN_LED_GPIO_Port, GRN_LED_Pin, !!remote_param);
+	//HAL_GPIO_WritePin(GRN_LED_GPIO_Port, GRN_LED_Pin, !!remote_param);
 	return;
 }
 
@@ -125,7 +125,7 @@ void init_error(void)
 {
 	while (1)
 	{
-		HAL_GPIO_TogglePin(GRN_LED_GPIO_Port, GRN_LED_Pin);
+		HAL_GPIO_TogglePin(HEARTBEAT_GPIO_Port, HEARTBEAT_Pin);
 		HAL_Delay(250);
 	}
 }

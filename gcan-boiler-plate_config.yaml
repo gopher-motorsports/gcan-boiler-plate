@@ -16,19 +16,18 @@ buckets:
                 ADC: ADC2_IN9
                 sensor: linear_pos_sensor_50
                 samples_buffered: 1
-	    	tcm_target_rpm:
+            tcm_target_rpm:
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
-
-		ADC: NON_ADC
-                sensor: NON_ADC
-                samples_buffered: 1
+                # ADC: NON_ADC
+                # sensor: NON_ADC
+                # samples_buffered: 1
             tcm_trans_rpm:
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
-	    tcm_current_gear:
+            tcm_current_gear:
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
