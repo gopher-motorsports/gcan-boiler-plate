@@ -8,6 +8,6 @@
 
 void init(CAN_HandleTypeDef* hcan_ptr);
 void can_buffer_handling_loop();
-void main_loop();
+int main_loop(U16* ic1buf);
 
 #endif

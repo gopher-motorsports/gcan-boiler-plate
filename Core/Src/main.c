@@ -29,6 +29,8 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
+U16 ic1buf[IC_BUF_SIZE] = {0};
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -341,7 +343,7 @@ void task_MainTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-	  main_loop();
+	  main_loop(ic1buf);
     osDelay(10);
   }
   /* USER CODE END 5 */

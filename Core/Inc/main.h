@@ -42,6 +42,9 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 
+#define IC_BUF_SIZE 64
+extern TIM_HandleTypeDef htim3;
+
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
