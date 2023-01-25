@@ -11,6 +11,8 @@
 // if defined, GCAN tries to retransmit messages on their destination bus
 //#define CAN_ROUTER
 
+#define TARGET F4XX
+
 // if defined, all CAN messages are accepted
 //#define NO_FILTER
 

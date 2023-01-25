@@ -124,7 +124,7 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  init(&hcan1);
+  // init(&hcan1);
 
   /* USER CODE END 2 */
 
