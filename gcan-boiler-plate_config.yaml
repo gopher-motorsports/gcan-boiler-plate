@@ -20,7 +20,7 @@ buckets:
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
-	    tcm_target_rpm
+
 		ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
