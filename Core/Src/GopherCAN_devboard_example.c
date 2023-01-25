@@ -12,6 +12,7 @@ CAN_HandleTypeDef* example_hcan;
 // Use this to define what module this board will be
 #define THIS_MODULE_ID PDM_ID
 #define PRINTF_HB_MS_BETWEEN 1000
+#define HEARTBEAT_MS_BETWEEN 500
 
 
 // some global variables for examples
@@ -66,8 +67,15 @@ void can_buffer_handling_loop()
 //  called every 10ms
 void main_loop()
 {
+	static uint32_t last_heartbeat = 0;
 	static U32 last_print_hb = 0;
 	U8 button_state;
+
+	if (HAL_GetTick() - last_heartbeat > HEARTBEAT_MS_BETWEEN)
+	{
+		last_heartbeat = HAL_GetTick();
+		HAL_GPIO_TogglePin(HEARTBEAT_GPIO_Port, HEARTBEAT_Pin);
+	}
 
 	// send the current tick over UART every second
 	if (HAL_GetTick() - last_print_hb >= PRINTF_HB_MS_BETWEEN)
