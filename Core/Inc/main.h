@@ -62,8 +62,8 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define BUTTON_Pin GPIO_PIN_13
 #define BUTTON_GPIO_Port GPIOC
-#define GRN_LED_Pin GPIO_PIN_5
-#define GRN_LED_GPIO_Port GPIOA
+#define HEARTBEAT_Pin GPIO_PIN_5
+#define HEARTBEAT_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
