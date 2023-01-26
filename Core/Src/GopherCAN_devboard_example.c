@@ -8,13 +8,18 @@
 
 // the HAL_CAN struct. This example only works for a single CAN bus
 CAN_HandleTypeDef* example_hcan;
+extern TIM_HandleTypeDef htim3;
 
 
 // Use this to define what module this board will be
 #define THIS_MODULE_ID PDM_ID
 #define PRINTF_HB_MS_BETWEEN 1000
 #define HEARTBEAT_MS_BETWEEN 500
-
+#define DMA_READ_MS_BETWEEN 1
+#define DMA_STOPPED_TIMEOUT 10
+#define DMA_LOW_SAMPLES 2
+#define DMA_HIGH_SAMPLES IC_BUF_SIZE
+#define HIGH_RPM 1500
 
 // some global variables for examples
 U8 last_button_state = 0;
@@ -22,6 +27,7 @@ static U16 averageSpeed = 0;
 static bool stopped = true;
 
 // Debug Variables Start
+static U32 lastDMACheckMs = 0;
 static U16 DMACurrentPosition = 0;
 static U16 mostRecentDelta = 0;
 static U16 amountOfSamples = 0;
@@ -83,7 +89,6 @@ void main_loop(U16* ic1buf)
 	static uint32_t last_heartbeat = 0;
 	static U32 last_print_hb = 0;
 	static U32 lastDMAReadValueTimeMs = 0;
-	static U32 lastDMACheckMs = 0;
 	U8 button_state;
 
 	if (HAL_GetTick() - last_heartbeat > HEARTBEAT_MS_BETWEEN)
