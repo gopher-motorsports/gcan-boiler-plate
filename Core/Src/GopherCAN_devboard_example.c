@@ -19,21 +19,28 @@ extern TIM_HandleTypeDef htim3;
 #define DMA_STOPPED_TIMEOUT 10
 #define DMA_LOW_SAMPLES 2
 #define DMA_HIGH_SAMPLES IC_BUF_SIZE
-#define HIGH_RPM 1500
+#define HIGH_RPM 1500.0
+#define TICKS_PER_REV 30
+#define MS_IN_A_MINUTE 60000
 
 // some global variables for examples
 U8 last_button_state = 0;
-static U16 averageSpeed = 0;
+static U16 averageSpeedTimerTicks = 0;
 static bool stopped = true;
 
 // Debug Variables Start
 static U32 lastDMACheckMs = 0;
-static U16 DMACurrentPosition = 0;
+static S16 DMACurrentPosition = 0;
 static U16 mostRecentDelta = 0;
 static U16 amountOfSamples = 0;
-static S32 valueInQuestion = 0;
+static U16 valueInQuestion = 0;
 static U16 firstValue = 0;
 static U16 lastValue = 0;
+static U16 RPM = 0;
+static U16 deltaList[IC_BUF_SIZE] = {0};
+static U32 deltaTotal = 0;
+static U16 signalRate = 0;
+static U16 ic1bufCopy[IC_BUF_SIZE] = {0};
 // Debug Variables End
 
 
@@ -41,6 +48,8 @@ static U16 lastValue = 0;
 static void change_led_state(U8 sender, void* UNUSED_LOCAL_PARAM, U8 remote_param, U8 UNUSED1, U8 UNUSED2, U8 UNUSED3);
 static void init_error(void);
 static U16 checkTransSpeedDMA(U16* ic1buf, U32* last_DMA_read, U16 averageSpeed);
+static U16 getRPM();
+static U16 getSignalRate();
 
 // init
 //  What needs to happen on startup in order to run GopherCAN
@@ -107,7 +116,9 @@ void main_loop(U16* ic1buf)
 	if (HAL_GetTick() - lastDMACheckMs >= DMA_READ_MS_BETWEEN)
 	{
 		lastDMACheckMs = HAL_GetTick();
-		averageSpeed = checkTransSpeedDMA(ic1buf, &lastDMAReadValueTimeMs, averageSpeed);
+		averageSpeedTimerTicks = checkTransSpeedDMA(ic1buf, &lastDMAReadValueTimeMs, averageSpeedTimerTicks);
+		RPM = getRPM();
+		signalRate = getSignalRate();
 	}
 
 	// If the button is pressed send a can command to another to change the LED state
@@ -127,24 +138,22 @@ void main_loop(U16* ic1buf)
 	}
 }
 
-static U16 checkTransSpeedDMA(U16* ic1buf, U32* lastDMAReadValueTimeMs, U16 averageSpeed) {
+static U16 checkTransSpeedDMA(U16* ic1buf, U32* lastDMAReadValueTimeMs, U16 averageSpeedMsPerTick) {
 
 	static U16 DMA_lastReadValue = 0;
 
 	//U16 DMACurrentPosition = 0;
-	U16 ic1bufCopy[IC_BUF_SIZE] = {0};
 
 	// Copy all the values so they can't change while doing calculations
 	//HAL_TIM_IC_Stop_DMA(&htim3, TIM_CHANNEL_1);
 	DMACurrentPosition = IC_BUF_SIZE - (U16)((htim3.hdma[1])->Instance->NDTR);
-	for (U16 c = 0; c < IC_BUF_SIZE - 1; c++)
+	for (U16 c = 0; c < IC_BUF_SIZE; c++)
 	{
 		ic1bufCopy[c] = ic1buf[c];
-
 	}
 	//HAL_TIM_IC_Start_DMA(&htim3, TIM_CHANNEL_1, (U32*)ic1buf, IC_BUF_SIZE);
 
-	valueInQuestion = (S32)ic1bufCopy[(U16)((S32)DMACurrentPosition - 1 + IC_BUF_SIZE) % IC_BUF_SIZE];
+	valueInQuestion = ic1bufCopy[(U16)((DMACurrentPosition - 1 + IC_BUF_SIZE) % IC_BUF_SIZE)];
 
 	if (stopped) {
 		if (valueInQuestion != 0) {
@@ -171,20 +180,26 @@ static U16 checkTransSpeedDMA(U16* ic1buf, U32* lastDMAReadValueTimeMs, U16 aver
 
 			return 0;
 		}
-		return averageSpeed;
+		return averageSpeedMsPerTick;
 	}
 	DMA_lastReadValue = valueInQuestion;
 
 	// Calculate the amount of samples to take to get the speed based on the delta between the last 2 values
 	// TODO: Protect this from rollover, and make sure there aren't other issues
-	/*U16*/ mostRecentDelta = ic1bufCopy[(DMACurrentPosition - 2 + IC_BUF_SIZE) % IC_BUF_SIZE] - valueInQuestion;
-	/*U16*/ amountOfSamples = (DMA_HIGH_SAMPLES / HIGH_RPM) * mostRecentDelta + DMA_LOW_SAMPLES; // Equation for getting how many samples we should average
+	U16 value2 = ic1bufCopy[(U16)((DMACurrentPosition - 2 + IC_BUF_SIZE) % IC_BUF_SIZE)];
+	if (valueInQuestion < value2) {
+		mostRecentDelta = ((1 << 16) | valueInQuestion) - value2;
+	} else {
+		mostRecentDelta = valueInQuestion - value2;
+	}
+	/*U16*/ //mostRecentDelta = ic1bufCopy[(DMACurrentPosition - 2 + IC_BUF_SIZE) % IC_BUF_SIZE] - valueInQuestion;
+	/*U16*/ amountOfSamples = 40;// (DMA_HIGH_SAMPLES / HIGH_RPM) * mostRecentDelta + DMA_LOW_SAMPLES; // Equation for getting how many samples we should average
 
 	// Calculate the deltas between each of the time values and store them in deltaList
-	U16 deltaList[IC_BUF_SIZE] = {0};
+	//deltaList[IC_BUF_SIZE] = {0};
 	for (U16 c = 0; c < amountOfSamples - 1; c++)
 	{
-		S16 i = (DMACurrentPosition + c) % IC_BUF_SIZE;
+		S16 i = (DMACurrentPosition - 1 - c + IC_BUF_SIZE) % IC_BUF_SIZE;
 		U16 value1 = ic1bufCopy[i];
 		U16 value2 = ic1bufCopy[(i - 1 + IC_BUF_SIZE) % IC_BUF_SIZE];
 		if (value1 < value2) {
@@ -195,7 +210,7 @@ static U16 checkTransSpeedDMA(U16* ic1buf, U32* lastDMAReadValueTimeMs, U16 aver
 	}
 
 	// Get average of deltas
-	U16 deltaTotal = 0;
+	deltaTotal = 0;
 	for (U16 c = 0; c < amountOfSamples - 1; c++) {
 		deltaTotal += deltaList[c];
 	}
@@ -220,10 +235,16 @@ static U16 checkTransSpeedDMA(U16* ic1buf, U32* lastDMAReadValueTimeMs, U16 aver
 
 	// TODO: Translate value to desired units
 
-	return deltaTotal / amountOfSamples - 1;
+	return deltaTotal / (amountOfSamples - 1);
 }
 
+static U16 getRPM() {
+	return averageSpeedTimerTicks * TICKS_PER_REV / 10000 * 60;
+}
 
+static U16 getSignalRate() {
+	return averageSpeedTimerTicks / 10;
+}
 
 
 // can_callback_function example
