@@ -42,6 +42,8 @@ void init(CAN_HandleTypeDef* hcan_ptr)
 	{
 		init_error();
 	}
+
+	init_speed_sensor();
 }
 
 
@@ -74,6 +76,19 @@ void main_loop()
 		printf("Current tick: %lu\n", HAL_GetTick());
 		last_print_hb = HAL_GetTick();
 	}
+
+	// DEBUG
+	static U8 last_led = 0;
+	static U32 last_led_time = 0;
+
+	if (HAL_GetTick() - last_led_time >= 250)
+	{
+		send_can_command(PRIO_HIGH, ALL_MODULES_ID, SET_LED_STATE, last_led, last_led, last_led, last_led);
+		last_led_time = HAL_GetTick();
+		last_led = (last_led + 1) % 2;
+	}
+
+
 }
 
 

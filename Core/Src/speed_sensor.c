@@ -6,6 +6,8 @@
 // static function prototypes
 // TODO
 
+extern TIM_HandleTypeDef htim3;
+
 TIM_HandleTypeDef* htim;
 U16 ic1buf[IC_BUF_SIZE] = {0};
 U16 ic2buf[IC_BUF_SIZE] = {0};
@@ -15,9 +17,8 @@ U16 ic4buf[IC_BUF_SIZE] = {0};
 
 // init_speed_sensor
 //  TODO DOCS
-S8 init_speed_sensor(TIM_HandleTypeDef* htim, U32 chan, float conversion)
+S8 init_speed_sensor()
 {
-	/*
 	// starting the timer inputs for DMA
 	if (HAL_TIM_IC_Start_DMA(&htim3, TIM_CHANNEL_1, (U32*)ic1buf, IC_BUF_SIZE) ||
 		HAL_TIM_IC_Start_DMA(&htim3, TIM_CHANNEL_2, (U32*)ic2buf, IC_BUF_SIZE) ||
@@ -30,7 +31,6 @@ S8 init_speed_sensor(TIM_HandleTypeDef* htim, U32 chan, float conversion)
 
 	// TODO
 	return -1;
-	*/
 }
 
 
@@ -61,9 +61,7 @@ float get_sensor_speed(void)
 	HAL_TIM_IC_Start_DMA(&htim3, TIM_CHANNEL_2, (U32*)ic2buf, IC_BUF_SIZE);
 	HAL_TIM_IC_Start_DMA(&htim3, TIM_CHANNEL_3, (U32*)ic3buf, IC_BUF_SIZE);
 	HAL_TIM_IC_Start_DMA(&htim3, TIM_CHANNEL_4, (U32*)ic4buf, IC_BUF_SIZE);
-
 	*/
-
 }
 
 
