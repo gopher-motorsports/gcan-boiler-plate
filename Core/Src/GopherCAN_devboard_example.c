@@ -3,6 +3,7 @@
 
 #include "GopherCAN_devboard_example.h"
 #include "main.h"
+#include "pulse_sensor.h"
 #include <stdio.h>
 
 // the HAL_CAN struct. This example only works for a single CAN bus
@@ -13,6 +14,7 @@ CAN_HandleTypeDef* example_hcan;
 #define THIS_MODULE_ID PDM_ID
 #define PRINTF_HB_MS_BETWEEN 1000
 #define HEARTBEAT_MS_BETWEEN 500
+#define DMA_MS_BETWEEN 1
 
 
 // some global variables for examples
@@ -69,7 +71,14 @@ void main_loop()
 {
 	static uint32_t last_heartbeat = 0;
 	static U32 last_print_hb = 0;
+	static U32 lastDMACheckMs = 0;
 	U8 button_state;
+
+	if (HAL_GetTick() - lastDMACheckMs >= DMA_MS_BETWEEN)
+	{
+		checkTransSpeedDMAs();
+		lastDMACheckMs = HAL_GetTick();
+	}
 
 	if (HAL_GetTick() - last_heartbeat > HEARTBEAT_MS_BETWEEN)
 	{
