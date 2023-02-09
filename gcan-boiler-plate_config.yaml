@@ -53,12 +53,4 @@ buckets:
                 sensor: linear_pos_sensor_50
                 samples_buffered: 2
                 
-            dam_chan_9:
-                ADC: ADC3_IN1
-                sensor: linear_pos_sensor_50
-                samples_buffered: 2
-                
-            dam_chan_10:
-                ADC: ADC3_IN0
-                sensor: linear_pos_sensor_50
-                samples_buffered: 2
+
