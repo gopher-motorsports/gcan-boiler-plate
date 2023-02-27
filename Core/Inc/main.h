@@ -57,9 +57,9 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define GSense_Pin GPIO_PIN_5
+#define GSense_Pin GPIO_PIN_12
 #define GSense_GPIO_Port GPIOB
-#define HBeat_Pin GPIO_PIN_6
+#define HBeat_Pin GPIO_PIN_13
 #define HBeat_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
