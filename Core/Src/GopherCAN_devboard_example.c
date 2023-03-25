@@ -4,6 +4,7 @@
 #include "GopherCAN_devboard_example.h"
 #include "main.h"
 #include <stdio.h>
+#include <stdbool.h>
 
 // the HAL_CAN struct. This example only works for a single CAN bus
 CAN_HandleTypeDef* example_hcan;
@@ -118,6 +119,54 @@ void init_error(void)
 		HAL_GPIO_TogglePin(GRN_LED_GPIO_Port, GRN_LED_Pin);
 		HAL_Delay(250);
 	}
+}
+
+
+//Start of Error HeartBeat Code
+//user inputs if they want and error state and how many pulses they want in that error state
+//port and pin of led are added for HAL_GPIO statements
+static uint32_t defaultTimeSum = 0;
+static uint32_t errorTimeSum = 0;
+static uint16_t heartBeatStepCounter = 0;
+
+
+void setHeartBeatMode(bool errorState, uint16_t blinksPerErrorCycle, GPIO_TypeDef* ledPort, uint16_t ledPin){
+	//error state: pulse amount desired then long pause
+	//default state: constant on-off
+
+    uint32_t currentTime = HAL_GetTick();
+    uint16_t lastHeartBeatPulse = blinksPerErrorCycle*2-1;
+
+    if(errorState == TRUE){
+    		//each error loop with have an amount of toggles that is desired Pulses * 2
+        	if(heartBeatStepCounter < blinksPerErrorCycle*2){
+        		if(errorTimeSum <= currentTime){
+        			//on last pulse hold for 800 ms, could be altered on preference
+        			if(heartBeatStepCounter == (lastHeartBeatPulse)){
+        				HAL_GPIO_TogglePin(ledPort, ledPin);
+        				errorTimeSum = currentTime + 800;
+        				heartBeatStepCounter = 0;
+        			}
+        			//all other pulses have a duration of 200ms, could be altered on preference
+        			else{
+        				HAL_GPIO_TogglePin(ledPort, ledPin);
+        				errorTimeSum = currentTime + 200;
+        				heartBeatStepCounter++;
+        			}
+
+        		}
+
+        	}
+
+        }
+
+    //default heart beat mode
+    else{
+        if(defaultTimeSum <= currentTime){
+            HAL_GPIO_TogglePin(ledPort, ledPin);
+            defaultTimeSum = currentTime + 500;
+        }
+    }
 }
 
 // end of GopherCAN_example.c
