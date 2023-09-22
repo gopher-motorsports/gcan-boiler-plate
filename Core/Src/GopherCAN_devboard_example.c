@@ -10,7 +10,7 @@ CAN_HandleTypeDef* example_hcan;
 
 
 // Use this to define what module this board will be
-#define THIS_MODULE_ID PDM_ID
+#define THIS_MODULE_ID PLM_ID
 #define PRINTF_HB_MS_BETWEEN 1000
 
 
