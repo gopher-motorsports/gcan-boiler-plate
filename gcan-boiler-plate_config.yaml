@@ -1,0 +1,33 @@
+
+module_name: "front_suspension_load_cell_board"
+
+buckets:
+    bucket_0:
+        # NOTE: frequency will be converted to an integer number of ms for a delay
+        frequency_hz: 100
+        parameters:
+            # Listed in order of their pins in the sensor hub board side connector
+            front1SuspensionLoadCell_N:
+                ADC: ADC1_IN0
+                sensor: suspension_load_cell
+                samples_buffered: 2
+            front2SuspensionLoadCell_N:
+                ADC: ADC1_IN1
+                sensor: suspension_load_cell
+                samples_buffered: 2
+            front3SuspensionLoadCell_N:
+                ADC: ADC1_IN4
+                sensor: suspension_load_cell
+                samples_buffered: 2
+            front4SuspensionLoadCell_N:
+                ADC: ADC1_IN8
+                sensor: suspension_load_cell
+                samples_buffered: 2
+            front5SuspensionLoadCell_N:
+                ADC: ADC1_IN10
+                sensor: suspension_load_cell
+                samples_buffered: 2
+            front6SuspensionLoadCell_N:
+                ADC: ADC1_IN11
+                sensor: suspension_load_cell
+                samples_buffered: 2
