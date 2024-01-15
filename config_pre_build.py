@@ -15,7 +15,7 @@ if (len(sys.argv) < 2):
 
 car_path = os.path.join(gcannon_path,'configs',sys.argv[1]+'.yaml')
 gsense_path = os.path.join(main_dir,'Gopher_Sense')
-config_file_path = os.path.join(proj_dir,dir_name,'_config.yaml')
+config_file_path = os.path.join(proj_dir,dir_name + '_config.yaml')
 
 # Enter GopherCAN autogen command
 # ---
