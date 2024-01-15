@@ -74,6 +74,9 @@ void main_loop()
 	{
 		printf("Current tick: %lu\n", HAL_GetTick());
 		last_print_hb = HAL_GetTick();
+		HAL_GPIO_TogglePin(GRN_LED_GPIO_Port, GRN_LED_Pin);
+		HAL_GPIO_TogglePin(SENSOR_HUB_HBEAT_GPIO_Port, SENSOR_HUB_HBEAT_Pin);
+		HAL_GPIO_TogglePin(SENCOR_HUB_GSENSE_GPIO_Port, SENCOR_HUB_GSENSE_Pin);
 	}
 
 	// If the button is pressed send a can command to another to change the LED state
