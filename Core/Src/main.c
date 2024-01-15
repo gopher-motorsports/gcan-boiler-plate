@@ -132,11 +132,11 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of main_task */
-  osThreadDef(main_task, task_MainTask, osPriorityNormal, 0, 512);
+  osThreadDef(main_task, task_MainTask, osPriorityNormal, 0, 1024);
   main_taskHandle = osThreadCreate(osThread(main_task), NULL);
 
   /* definition and creation of buffer_handling */
-  osThreadDef(buffer_handling, task_BufferHandling, osPriorityAboveNormal, 0, 256);
+  osThreadDef(buffer_handling, task_BufferHandling, osPriorityAboveNormal, 0, 512);
   buffer_handlingHandle = osThreadCreate(osThread(buffer_handling), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -283,6 +283,8 @@ static void MX_USART2_UART_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -291,6 +293,9 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GRN_LED_GPIO_Port, GRN_LED_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, SENCOR_HUB_GSENSE_Pin|SENSOR_HUB_HBEAT_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : BUTTON_Pin */
   GPIO_InitStruct.Pin = BUTTON_Pin;
@@ -305,6 +310,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GRN_LED_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : SENCOR_HUB_GSENSE_Pin SENSOR_HUB_HBEAT_Pin */
+  GPIO_InitStruct.Pin = SENCOR_HUB_GSENSE_Pin|SENSOR_HUB_HBEAT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */

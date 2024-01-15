@@ -61,6 +61,11 @@ void Error_Handler(void);
 #define BUTTON_GPIO_Port GPIOC
 #define GRN_LED_Pin GPIO_PIN_5
 #define GRN_LED_GPIO_Port GPIOA
+#define SENCOR_HUB_GSENSE_Pin GPIO_PIN_12
+#define SENCOR_HUB_GSENSE_GPIO_Port GPIOB
+#define SENSOR_HUB_HBEAT_Pin GPIO_PIN_13
+#define SENSOR_HUB_HBEAT_GPIO_Port GPIOB
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
