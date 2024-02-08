@@ -1,20 +1,20 @@
 #ifndef GOPHERCAN_CONFIG_H
 #define GOPHERCAN_CONFIG_H
 
+#define THIS_MODULE_ID 1
+
 // RX and TX buffer sizes (bytes)
 #define RX_BUFFER_SIZE 32
 #define TX_BUFFER_SIZE 32
 
-// number of connected CAN buses (max 3)
-#define NUM_OF_BUSSES 1
+// ID filters
+//#define FILTER_ACCEPT_ALL // accept all messages
+#define FILTER_ACCEPT_STD // accept 11-bit IDs
+#define FILTER_ACCEPT_EXT_THIS_ID // accept 29-bit IDs with destination = THIS_MODULE_ID
+#define FILTER_ACCEPT_EXT_ALL_ID // accept 29-bit IDs with destination = ALL_MODULES_ID
 
-// if defined, GCAN tries to retransmit messages on their destination bus
-//#define CAN_ROUTER
-
-// if defined, all CAN messages are accepted
-//#define NO_FILTER
-
-// if defined, 11-bit ID data messages are filtered out
-//#define IGNORE_DATA
+// if defined, messages received with a different destination module (29-bit ID) will be retransmitted
+// this can be used to pass messages between unconnected modules
+//#define ENABLE_ROUTING
 
 #endif

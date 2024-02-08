@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>f4-boiler-plate</name>
+	<name>gcan-boiler-plate</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -31,7 +31,7 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>Core/gophercan-lib</name>
+			<name>gophercan-lib</name>
 			<type>2</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/gophercan-lib</locationURI>
 		</link>

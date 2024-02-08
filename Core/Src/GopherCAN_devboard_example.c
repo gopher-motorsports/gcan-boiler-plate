@@ -8,18 +8,14 @@
 // the HAL_CAN struct. This example only works for a single CAN bus
 CAN_HandleTypeDef* example_hcan;
 
-
-// Use this to define what module this board will be
-#define THIS_MODULE_ID PLM_ID
 #define PRINTF_HB_MS_BETWEEN 1000
-
 
 // some global variables for examples
 U8 last_button_state = 0;
 
 
 // the CAN callback function used in this example
-static void change_led_state(U8 sender, void* UNUSED_LOCAL_PARAM, U8 remote_param, U8 UNUSED1, U8 UNUSED2, U8 UNUSED3);
+static void change_led_state(U8 sender, U8 remote_param, U8 UNUSED1, U8 UNUSED2, U8 UNUSED3);
 static void init_error(void);
 
 // init
@@ -29,19 +25,14 @@ void init(CAN_HandleTypeDef* hcan_ptr)
 	example_hcan = hcan_ptr;
 
 	// initialize CAN
-	// NOTE: CAN will also need to be added in CubeMX and code must be generated
-	// Check the STM_CAN repo for the file "F0xx CAN Config Settings.pptx" for the correct settings
-	if (init_can(GCAN0, example_hcan, THIS_MODULE_ID, BXTYPE_MASTER))
+	if (init_can(hcan_ptr, GCAN0))
 	{
 		init_error();
 	}
 
 	// Set the function pointer of SET_LED_STATE. This means the function change_led_state()
 	// will be run whenever this can command is sent to the module
-	if (add_custom_can_func(SET_LED_STATE, &change_led_state, TRUE, NULL))
-	{
-		init_error();
-	}
+	attach_callback_cmd(SET_LED_STATE, &change_led_state);
 }
 
 
@@ -95,13 +86,7 @@ void main_loop()
 
 
 // can_callback_function example
-
-// change_led_state
-//  a custom function that will change the state of the LED specified
-//  by parameter to remote_param. In this case parameter is a U16*, but
-//  any data type can be pointed to, as long as it is configured and casted
-//  correctly
-static void change_led_state(U8 sender, void* parameter, U8 remote_param, U8 UNUSED1, U8 UNUSED2, U8 UNUSED3)
+static void change_led_state(U8 sender, U8 remote_param, U8 UNUSED1, U8 UNUSED2, U8 UNUSED3)
 {
 	HAL_GPIO_WritePin(GRN_LED_GPIO_Port, GRN_LED_Pin, !!remote_param);
 	return;
