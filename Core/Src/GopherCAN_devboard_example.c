@@ -65,6 +65,7 @@ void main_loop()
 		printf("Current tick: %lu\n", HAL_GetTick());
 		last_print_hb = HAL_GetTick();
 		motorTemp_C.data++;
+		send_group(0x44E);
 	}
 
 }
