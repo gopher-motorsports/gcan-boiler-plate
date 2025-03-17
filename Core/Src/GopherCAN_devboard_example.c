@@ -58,30 +58,15 @@ void can_buffer_handling_loop()
 void main_loop()
 {
 	static U32 last_print_hb = 0;
-	U8 button_state;
 
 	// send the current tick over UART every second
 	if (HAL_GetTick() - last_print_hb >= PRINTF_HB_MS_BETWEEN)
 	{
 		printf("Current tick: %lu\n", HAL_GetTick());
 		last_print_hb = HAL_GetTick();
+		motorTemp_C.data++;
 	}
 
-	// If the button is pressed send a can command to another to change the LED state
-	// To on or off depending on the button
-	button_state = HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin);
-
-	// Logic to only send one message per change in button state
-	if (button_state != last_button_state)
-	{
-		last_button_state = button_state;
-
-		if (send_can_command(PRIO_HIGH, ALL_MODULES_ID, SET_LED_STATE,
-				!button_state, !button_state, !button_state, !button_state))
-		{
-			// error sending command
-		}
-	}
 }
 
 
