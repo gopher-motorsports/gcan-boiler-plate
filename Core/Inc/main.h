@@ -36,7 +36,6 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -59,8 +58,16 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define BUTTON_Pin GPIO_PIN_13
 #define BUTTON_GPIO_Port GPIOC
-#define GRN_LED_Pin GPIO_PIN_5
-#define GRN_LED_GPIO_Port GPIOA
+#define PU2_Pin GPIO_PIN_2
+#define PU2_GPIO_Port GPIOB
+#define PU3_Pin GPIO_PIN_14
+#define PU3_GPIO_Port GPIOB
+#define GRN_LED_Pin GPIO_PIN_15
+#define GRN_LED_GPIO_Port GPIOB
+#define GSENSE_Pin GPIO_PIN_12
+#define GSENSE_GPIO_Port GPIOC
+#define HBEAT_Pin GPIO_PIN_2
+#define HBEAT_GPIO_Port GPIOD
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

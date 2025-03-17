@@ -51,37 +51,28 @@ void can_buffer_handling_loop()
 	service_can_tx(example_hcan);
 }
 
+uint8_t pullup_2_state = 0;
+uint8_t pullup_3_state = 0;
 
 // main_loop
 //  another loop. This includes logic for sending a CAN command. Designed to be
 //  called every 10ms
 void main_loop()
 {
+
 	static U32 last_print_hb = 0;
-	U8 button_state;
+	//U8 button_state;
+	HAL_GPIO_WritePin(PU2_GPIO_Port, PU2_Pin, pullup_2_state);
+	HAL_GPIO_WritePin(PU3_GPIO_Port, PU3_Pin, pullup_3_state);
 
 	// send the current tick over UART every second
 	if (HAL_GetTick() - last_print_hb >= PRINTF_HB_MS_BETWEEN)
 	{
-		printf("Current tick: %lu\n", HAL_GetTick());
+		HAL_GPIO_TogglePin(HBEAT_GPIO_Port, HBEAT_Pin);
+		HAL_GPIO_TogglePin(GSENSE_GPIO_Port, GSENSE_Pin);
 		last_print_hb = HAL_GetTick();
 	}
 
-	// If the button is pressed send a can command to another to change the LED state
-	// To on or off depending on the button
-	button_state = HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin);
-
-	// Logic to only send one message per change in button state
-	if (button_state != last_button_state)
-	{
-		last_button_state = button_state;
-
-		if (send_can_command(PRIO_HIGH, ALL_MODULES_ID, SET_LED_STATE,
-				!button_state, !button_state, !button_state, !button_state))
-		{
-			// error sending command
-		}
-	}
 }
 
 
