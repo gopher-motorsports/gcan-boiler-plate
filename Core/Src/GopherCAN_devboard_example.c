@@ -82,6 +82,9 @@ void main_loop()
 			// error sending command
 		}
 	}
+
+	swButon0_state.data = 2;
+	send_group(0x200);
 }
 
 
